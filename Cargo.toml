@@ -1,0 +1,13 @@
+[package]
+name = "image_to_space_engineers_lcd"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+keywords = ["space_engineers"]
+repository = "https://github.com/tigerros-se/image_to_lcd"
+description = "A crate that allows you to convert an image to a string that can be displayed in a Space Engineers game LCD panel"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+image = "0.24.0"

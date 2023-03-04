@@ -1,0 +1,1 @@
+A crate that allows you to convert an image to a string that can be displayed in a Space Engineers game LCD panel.
