@@ -3,7 +3,9 @@ use image::{DynamicImage, GenericImage, GenericImageView, Rgba};
 const BIT_SPACING: f32 = 255.0 / 7.0;
 
 fn calculate_error(error: (i16, i16, i16), rate: i16) -> (i16, i16, i16) {
-	(((error.0 * rate) as f32 / 16.0).round() as i16, ((error.1 * rate) as f32 / 16.0).round() as i16, ((error.2 * rate) as f32 / 16.0).round() as i16)
+	(((error.0 * rate) as f32 / 16.0).round() as i16,
+	 ((error.1 * rate) as f32 / 16.0).round() as i16,
+	 ((error.2 * rate) as f32 / 16.0).round() as i16)
 }
 
 fn add_error_to_color(color: &Rgba<u8>, error: (i16, i16, i16)) -> Rgba<u8> {
