@@ -1,6 +1,6 @@
 [package]
 name = "image_to_space_engineers_lcd"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "MIT"
 keywords = ["space_engineers"]
