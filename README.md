@@ -29,15 +29,15 @@ I took the easy way out with aspect ratios.
 ## Example results
 Original image (image of actor Jonathan Frakes portraying the fictional character "William Thomas Riker" from the franchise Star Trek: The Next Generation):
 
-<img src="img/original.png" height="250" alt='Original image (image of actor Jonathan Frakes portraying the fictional character "William Thomas Riker" from the franchise Star Trek: The Next Generation)'/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/original.png" height="250" alt='Original image (image of actor Jonathan Frakes portraying the fictional character "William Thomas Riker" from the franchise Star Trek: The Next Generation)'/>
 
 Undithered version as seen in Space Engineers:
 
-<img src="img/undithered.jpg" height="250" alt="Undithered version in Space Engineers"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/undithered.jpg" height="250" alt="Undithered version in Space Engineers"/>
 
 Dithered version as seen in Space Engineers:
 
-<img src="img/dithered.jpg" height="250" alt="Dithered version in Space Engineers"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/dithered.jpg" height="250" alt="Dithered version in Space Engineers"/>
 
 In these screenshots, the undithered version looks darker than the dithered version, but that is only because of the in-game lighting.
 I took the screenshots on different panels at different times in the game's day/night cycle.
@@ -61,7 +61,7 @@ to the right/left (depends on the alignment). For text, this can be nice, but fo
 since it ends up covering some edge pixels because it moves them off the screen.
 
 #### Comparison (top panel has default padding, bottom panel doesn't):
-<img src="img/center_aligned_default_padding_comparison.png" height="500" alt="Comparison between configured panel (top) and panel with default 2% padding (bottom)"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/center_aligned_default_padding_comparison.png" height="500" alt="Comparison between configured panel (top) and panel with default 2% padding (bottom)"/>
 
 ### Changing the text alignment
 Imagine you have a portrait (greater height over width) that you want to display, but you don't want to stretch it to fit the panel.
@@ -69,7 +69,7 @@ In that case, if you were to display it on a square panel, there would be a big 
 You can change the alignment to center the image, therefore having an equivalent gap on each side of the panel.
 
 #### Comparison (top panel is aligned to the left, bottom panel isn't):
-<img src="img/left_aligned_no_padding_comparison.png" height="500" alt="Comparison between configured panel (top) and panel with default left alignment"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/left_aligned_no_padding_comparison.png" height="500" alt="Comparison between configured panel (top) and panel with default left alignment"/>
 
 ### Changing the color tone
 Normally, when you want text that is of a different color than white, you just change the color of the panel.
@@ -79,14 +79,14 @@ Our image looks a little too bright in-game. Using the color sliders, we can low
 In this case, I lowered them to all be at *100* from the default *255* (effectively lowering the brightness), and I think it looks much closer to the original.
 
 #### Comparison (top panel doesn't have any color modifications, bottom panel color is set to *100* throughout all RGB components):
-<img src="img/lower_brightness_comparison.png" height="500" alt="Comparison between image without color modifications (top) and image with all RGB components set to 100 (bottom)"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/lower_brightness_comparison.png" height="500" alt="Comparison between image without color modifications (top) and image with all RGB components set to 100 (bottom)"/>
 
 You can obviously change each individual RGB component. For example, increasing the red component can often make images (specifically of people or landscapes)
 look more "lively". Let's combine this with the previous method. This time, the red component is set to *220*, but green and blue to *180*.
 We lowered all of them, but made red stand out.
 
 #### Comparison (top panel doesn't have any color modifications, bottom panel has a red component value of *220*, but a green and blue value of *180*):
-<img src="img/increased_red_comparison.png" height="550" alt="Comparison between image without color modifications (top) and image with a red component value of 220, but a green and blue value of 180 (bottom)"/>
+<img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/increased_red_comparison.png" height="550" alt="Comparison between image without color modifications (top) and image with a red component value of 220, but a green and blue value of 180 (bottom)"/>
 
 ## Code example
 This is a simple example binary that does nothing more but ask the user all the necessary information to convert an image
