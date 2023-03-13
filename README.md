@@ -8,6 +8,7 @@
   - [Removing the default padding](#removing-the-default-padding)
   - [Changing the text alignment](#changing-the-text-alignment)
   - [Changing the color tone](#changing-the-color-tone)
+  - [Final comparison](#final-comparison)
 - [Code example](#code-example)
 - [How it works](#how-it-works)
 
@@ -110,6 +111,7 @@ We lowered all of them, but made red stand out.
 
 Following the simple steps above, you can get your panel to resemble the original image much more.
 Take a look at this comparison (top image is the original image, bottom left is the default panel configuration, bottom right is the tweaked panel):
+
 <img src="https://raw.githubusercontent.com/tigerros-SE/image_to_lcd/master/img/final_comparison.png" width="600" alt="Comparison between original image (top), default panel without any configurations (bottom left) and tweaked panel (bottom right)"/>
 
 Notice the absence of the gap on the left and top of the panel, and the closer color resemblance to the original image.
