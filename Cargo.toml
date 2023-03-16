@@ -7,12 +7,9 @@ keywords = ["space_engineers"]
 repository = "https://github.com/tigerros-se/image_to_lcd"
 description = "A crate that allows you to convert an image to a string that can be displayed in a Space Engineers LCD panel"
 include = [
-    "src/**/*.rs",
+    "src/**/*[!tests].rs",
     "Cargo.toml",
     "README.md"
-]
-exclude = [
-    "src/tests.rs",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
