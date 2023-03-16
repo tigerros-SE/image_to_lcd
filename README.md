@@ -146,40 +146,40 @@ use std::io::{Write};
 
 /// Utility function.
 fn read_line() -> String {
-	let mut buffer = String::new();
+  let mut buffer = String::new();
 
-	match io::stdin().read_line(&mut buffer) {
-		Ok(_) => {},
-		Err(e) => panic!("Failed to read line. Error: {:#?}", e),
-	}
+  match io::stdin().read_line(&mut buffer) {
+    Ok(_) => {},
+    Err(e) => panic!("Failed to read line. Error: {:#?}", e),
+  }
 
-	return buffer;
+  return buffer;
 }
 
 fn main() {
-	println!("Enter the image path:");
-	let path = read_line();
-	let trimmed_path = path.trim(); // Just in case extra spaces get lost in there.
-	let mut source = image::open(trimmed_path).unwrap();
+  println!("Enter the image path:");
+  let path = read_line();
+  let trimmed_path = path.trim(); // Just in case extra spaces get lost in there.
+  let mut source = image::open(trimmed_path).unwrap();
 
-	println!("Enter the panel ratio (width:height, for example, a Wide LCD Panel would be 2:1):");
-	let aspect_ratios_raw = read_line();
-	let aspect_ratios: Vec<&str> = aspect_ratios_raw.trim().split(':').collect();
-	let width_aspect_ratio: u32 = aspect_ratios[0].parse().unwrap();
-	let height_aspect_ratio: u32 = aspect_ratios[1].parse().unwrap();
+  println!("Enter the panel ratio (width:height, for example, a Wide LCD Panel would be 2:1):");
+  let aspect_ratios_raw = read_line();
+  let aspect_ratios: Vec<&str> = aspect_ratios_raw.trim().split(':').collect();
+  let width_aspect_ratio: u32 = aspect_ratios[0].parse().unwrap();
+  let height_aspect_ratio: u32 = aspect_ratios[1].parse().unwrap();
 
-    // Let's assume that we want to dither and don't want to stretch the image.
-    let resized = image_to_space_engineers_lcd::resized(&source, width_aspect_ratio, height_aspect_ratio, true);
-	let output_string = image_to_space_engineers_lcd::image_to_se_string(&resized, true);
-	let output_path = trimmed_path.to_owned() + "_space_engineers_text.txt";
-	let mut file = File::create(&output_path).unwrap();
+  // Let's assume that we want to dither and don't want to stretch the image.
+  let resized = image_to_space_engineers_lcd::resized(&source, width_aspect_ratio, height_aspect_ratio, true);
+  let output_string = image_to_space_engineers_lcd::image_to_se_string(&resized, true, true);
+  let output_path = trimmed_path.to_owned() + "_space_engineers_text.txt";
+  let mut file = File::create(&output_path).unwrap();
 
-	file.write_all(output_string.as_ref()).unwrap();
-	file.flush().unwrap();
+  file.write_all(output_string.as_ref()).unwrap();
+  file.flush().unwrap();
 
-	println!("The output file can be found at {}. Open it and select everything and copy it (CTRL + A, CTRL + C). Press enter to exit...", output_path);
-	read_line();
-}
+  println!("The output file can be found at {}. Open it and select everything and copy it (CTRL + A, CTRL + C). Press enter to exit...", output_path);
+  read_line();
+
 ```
 
 ## How it works
