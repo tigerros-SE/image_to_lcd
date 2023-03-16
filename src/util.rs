@@ -2,15 +2,22 @@ use image::{DynamicImage, Rgba, RgbaImage};
 use image::imageops::FilterType;
 
 const BIT_SPACING: f32 = 255.0 / 7.0;
+/// Serves simply as a temporary "transparent" character.
+/// Should be replaced by `TEMPORARY_TEMP_REPLACEMENT`.
+/// The reason why we can't use `TEMPORARY_TEMP_REPLACEMENT` right away, is because the `to_se_char`
+/// function returns a character, not a string.
+pub(crate) const TRANSPARENCY_TEMP: char = ' ';
+/// The truly transparent string.
+pub(crate) const TRANSPARENCY_TEMP_REPLACEMENT: &str = "\u{E075}\u{E072}\u{E070}";
 
 /// Converts a color into a Space Engineers character that displays that color in a configured LCD panel.
 /// # Arguments
 ///
 /// * `color` - The RGBA color to convert.
-/// * `preserve_transparency` - Whether to return an empty space if the `color` has an alpha channel value of 255 (it is fully transparent).
+/// * `preserve_transparency` - Whether to return the `TRANSPARENCY_TEMP` if the `color` has an alpha channel value of 0 (it is fully transparent).
 pub fn to_se_char(color: &Rgba<u8>, preserve_transparency: bool) -> char {
-	if preserve_transparency && color.0[3] == 255 {
-		return ' ';
+	if preserve_transparency && color.0[3] == 0 {
+		return TRANSPARENCY_TEMP;
 	}
 
 	// I'll let you on in a little secret. I have no idea how this works.

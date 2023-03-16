@@ -12,16 +12,14 @@ use image::{DynamicImage, RgbaImage};
 
 /// How many pixels are on one line of a square panel.
 /// The character number is actually `178 * 3 = 534`, because each color character is counted as three because it has the three RGB values.
-/// It's kind of confusing, yes.
+///
+/// *However*, fully transparent pixels get replaces with spaces, which are counted as one character.
+/// So `178 * 3 = 534` is not *always* the amount of characters in the output string.
+/// Not to mention the fact that some images are not `178` pixels wide.
 pub const SQUARE_PANEL_WIDTH_PIXEL_AMOUNT: u32 = 178;
 /// How many lines are in one square panel.
 /// Keep in mind there's only `177` newlines (`\n`), because the last line doesn't have a `\n`.
 pub const SQUARE_PANEL_LINE_AMOUNT: u32 = 178;
-/// How many characters are on one line of a square panel.
-/// This is equal to `SQUARE_PANEL_WIDTH_PIXEL_AMOUNT * 3`, because encoded color characters are counted as three characters.
-///
-/// **This is not reliable. Fully transparent pixels are replaced with a space which is only one character, whereas characters which have three RGB values encoded in them are counted as three characters.**
-pub const SQUARE_PANEL_WIDTH_CHARACTER_AMOUNT: u32 = SQUARE_PANEL_WIDTH_PIXEL_AMOUNT * 3;
 
 /// Resizes the image so that it can be converted.
 ///
@@ -78,7 +76,7 @@ pub fn resized(img: &DynamicImage, width_aspect_ratio: u32, height_aspect_ratio:
 ///
 /// * `img` - The image to convert.
 /// * `dither` - Whether to dither the image. This results in much better results, so you most likely want it `true`.
-/// * `preserve_transparency` - Whether to preserve transparency, however, only pixels with full transparency (an alpha value of 255) will be preserved.
+/// * `preserve_transparency` - Whether to preserve transparency, however, only pixels with full transparency (an alpha value of 0) will be preserved.
 ///
 /// # Examples
 ///
@@ -104,6 +102,10 @@ pub fn image_to_se_string(img: &RgbaImage, dither: bool, preserve_transparency: 
 		if y < height - 1 {
 			se_string.push('\n');
 		}
+	}
+
+	if preserve_transparency {
+		return se_string.replace(util::TRANSPARENCY_TEMP, util::TRANSPARENCY_TEMP_REPLACEMENT);
 	}
 
 	se_string

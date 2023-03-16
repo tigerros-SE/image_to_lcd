@@ -8,14 +8,13 @@ use crate::*;
 // something similar could result in a different result yet that result could still look good and be valid.
 // You don't have to do this everytime, because it creates files.
 
-const TEST_IMAGE_PATH: &str = "test_resources\\test.png";
-const LCD_CHARACTER_AMOUNT: u32 = (SQUARE_PANEL_WIDTH_CHARACTER_AMOUNT * SQUARE_PANEL_LINE_AMOUNT) + 177; // 177 = All the newlines
+const TEST_IMAGE_PATH: &str = "test_resources\\test_with_holes.png";
 
 fn get_image() -> DynamicImage {
 	image::open(TEST_IMAGE_PATH).unwrap()
 }
 
-fn create_file_with_output_string(output_string: String, output_path: String) {
+fn create_file_with_output_string(output_string: String, output_path: &String) {
 	let mut file = File::create(&output_path).unwrap();
 
 	file.write_all(output_string.as_ref()).unwrap();
@@ -30,8 +29,11 @@ fn human_eye_test() {
 	let source = get_image();
 	let resized = resized(&source, 1, 1, true);
 	let output_string = image_to_se_string(&resized, true, true);
+	let output_path = TEST_IMAGE_PATH.to_owned() + "_SELCD.txt";
 
-	create_file_with_output_string(output_string, TEST_IMAGE_PATH.to_owned() + "_SELCD.txt");
+	create_file_with_output_string(output_string, &output_path);
+
+	assert_eq!((format!("Paste this file: {} into a panel in-game.", output_path)), "");
 }
 
 /// Creates a file with the output string (not dithered).
@@ -42,8 +44,11 @@ fn human_eye_test_no_dither() {
 	let source = get_image();
 	let resized = resized(&source, 1, 1, true);
 	let output_string = image_to_se_string(&resized, false, true);
+	let output_path = TEST_IMAGE_PATH.to_owned() + "_SELCD_NO_DITHER.txt";
 
-	create_file_with_output_string(output_string, TEST_IMAGE_PATH.to_owned() + "_SELCD_NO_DITHER.txt");
+	create_file_with_output_string(output_string, &output_path);
+
+	assert_eq!((format!("Paste this file: {} into a panel in-game.", output_path)), "");
 }
 
 #[test]
@@ -52,15 +57,6 @@ fn correct_amount_of_pixels_in_resized_image() {
 	let resized = resized(&source, 1, 1, false);
 
 	assert_eq!(resized.width() * resized.height(), SQUARE_PANEL_WIDTH_PIXEL_AMOUNT * SQUARE_PANEL_WIDTH_PIXEL_AMOUNT);
-}
-
-#[test]
-fn correct_amount_of_characters_in_output_string() {
-	let source = get_image();
-	let resized = resized(&source, 1, 1, false);
-	let output_string = image_to_se_string(&resized, false, true);
-
-	assert_eq!(output_string.len(), LCD_CHARACTER_AMOUNT as usize);
 }
 
 #[test]
