@@ -9,9 +9,9 @@ const BIT_SPACING: f32 = 255.0 / 7.0;
 /// * `color` - The RGBA color to convert.
 /// * `preserve_transparency` - Whether to return an empty space if the `color` has an alpha channel value of 255 (it is fully transparent).
 pub fn to_se_char(color: &Rgba<u8>, preserve_transparency: bool) -> char {
-	if preserve_transparency && color.0[3] == 255 {
-		return ' ';
-	}
+	// if preserve_transparency && color.0[3] == 255 {
+	// 	return ' ';
+	// }
 
 	// I'll let you on in a little secret. I have no idea how this works.
 	// The bit shifting I get, to encode all the colors, but the "BIT_SPACING"? No clue.

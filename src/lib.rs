@@ -10,9 +10,18 @@ pub mod util;
 
 use image::{DynamicImage, RgbaImage};
 
-/// How many characters are allowed on one line (or how many lines) are on a square LCD panel.
-/// Wider panels will have more characters per line, but that's why we have aspect ratios.
-pub const LCD_SQUARE_PANEL_CHARACTER_SIZE: u32 = 178;
+/// How many pixels are on one line of a square panel.
+/// The character number is actually `178 * 3 = 534`, because each color character is counted as three because it has the three RGB values.
+/// It's kind of confusing, yes.
+pub const SQUARE_PANEL_WIDTH_PIXEL_AMOUNT: u32 = 178;
+/// How many lines are in one square panel.
+/// Keep in mind there's only `177` newlines (`\n`), because the last line doesn't have a `\n`.
+pub const SQUARE_PANEL_LINE_AMOUNT: u32 = 178;
+/// How many characters are on one line of a square panel.
+/// This is equal to `SQUARE_PANEL_WIDTH_PIXEL_AMOUNT * 3`, because encoded color characters are counted as three characters.
+///
+/// **This is not reliable. Fully transparent pixels are replaced with a space which is only one character, whereas characters which have three RGB values encoded in them are counted as three characters.**
+pub const SQUARE_PANEL_WIDTH_CHARACTER_AMOUNT: u32 = SQUARE_PANEL_WIDTH_PIXEL_AMOUNT * 3;
 
 /// Resizes the image so that it can be converted.
 ///
@@ -37,8 +46,8 @@ pub const LCD_SQUARE_PANEL_CHARACTER_SIZE: u32 = 178;
 pub fn resized(img: &DynamicImage, width_aspect_ratio: u32, height_aspect_ratio: u32, preserve_original_aspect_ratio: bool) -> RgbaImage {
 	if width_aspect_ratio == height_aspect_ratio {
 		return util::resized_exact_size(img,
-		                                LCD_SQUARE_PANEL_CHARACTER_SIZE,
-		                                LCD_SQUARE_PANEL_CHARACTER_SIZE,
+		                                SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
+		                                SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
 		                                preserve_original_aspect_ratio);
 	}
 
@@ -46,8 +55,8 @@ pub fn resized(img: &DynamicImage, width_aspect_ratio: u32, height_aspect_ratio:
 
 	if gcd == 1 {
 		return util::resized_exact_size(img,
-		                                width_aspect_ratio * LCD_SQUARE_PANEL_CHARACTER_SIZE,
-		                                height_aspect_ratio * LCD_SQUARE_PANEL_CHARACTER_SIZE,
+		                                width_aspect_ratio * SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
+		                                height_aspect_ratio * SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
 		                                preserve_original_aspect_ratio);
 	}
 
@@ -55,8 +64,8 @@ pub fn resized(img: &DynamicImage, width_aspect_ratio: u32, height_aspect_ratio:
 	let simplified_height_aspect_ratio = height_aspect_ratio / gcd;
 
 	util::resized_exact_size(img,
-	                         simplified_width_aspect_ratio * LCD_SQUARE_PANEL_CHARACTER_SIZE,
-	                         simplified_height_aspect_ratio * LCD_SQUARE_PANEL_CHARACTER_SIZE,
+	                         simplified_width_aspect_ratio * SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
+	                         simplified_height_aspect_ratio * SQUARE_PANEL_WIDTH_PIXEL_AMOUNT,
 	                         preserve_original_aspect_ratio)
 }
 
@@ -92,8 +101,10 @@ pub fn image_to_se_string(img: &RgbaImage, dither: bool, preserve_transparency: 
 			se_string.push(util::to_se_char(pix, preserve_transparency));
 		}
 
-		se_string.push('\n');
+		if y < height - 1 {
+			se_string.push('\n');
+		}
 	}
 
-	se_string.trim().to_string()
+	se_string
 }
