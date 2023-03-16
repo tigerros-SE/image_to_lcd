@@ -160,7 +160,7 @@ fn main() {
   println!("Enter the image path:");
   let path = read_line();
   let trimmed_path = path.trim(); // Just in case extra spaces get lost in there.
-  let mut source = image::open(trimmed_path).unwrap();
+  let source = image::open(trimmed_path).unwrap();
 
   println!("Enter the panel ratio (width:height, for example, a Wide LCD Panel would be 2:1):");
   let aspect_ratios_raw = read_line();
