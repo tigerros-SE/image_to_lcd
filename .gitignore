@@ -2,3 +2,5 @@
 /Cargo.lock
 /image_to_lcd.iml
 /.idea
+**/*_SELCD.txt
+**/*_SELCD_NO_DITHER.txt
