@@ -23,6 +23,7 @@ A crate that allows you to convert an image to a string that can be displayed in
 I would like to mention [Whip's Image Converter](https://github.com/Whiplash141/Whips-Image-Converter) by [Whiplash141](https://github.com/Whiplash141)
 for the inspiration and the method of converting a color to a Space Engineers LCD panel character.
 I don't know where he found how to do that. I made this for 5 reasons:
+
 1. I wanted to learn Rust.
 2. His program is slower.
 3. His program is (IMO) a little overcomplicated.
@@ -56,12 +57,13 @@ You can see that the surrounding yellow blocks are also darker in the undithered
 
 1. Obtain a [`DynamicImage`](https://docs.rs/image/latest/image/enum.DynamicImage.html)
 using the [image](https://crates.io/crates/image) crate.
-2. Call the [`image_to_se_string`](https://docs.rs/image_to_space_engineers_lcd/latest/image_to_space_engineers_lcd/fn.image_to_se_string.html)
-or the [`image_to_se_string_dithered`](https://docs.rs/image_to_space_engineers_lcd/latest/image_to_space_engineers_lcd/fn.image_to_se_string_dithered.html)
-function with the `DynamicImage` you have and the desired aspect ratios. The aspect ratio is important! It determines the dimensions of the image in-game.
+2. Resize the image using [`resized`](https://docs.rs/image_to_space_engineers_lcd/latest/image_to_space_engineers_lcd/fn.resized.html)
+function. The aspect ratio is important! It determines the dimensions of the image in-game.
 <br/><br/>For example, for a Wide LCD panel, you would need a `2:1` aspect ratio. That is, a `width_aspect_ratio` of 2 and a `height_aspect_ratio` of 1.
-However, if you do not want to change the aspect ratio of the image to fit a panel, set **both** of the arguments to 0.
-3. Now that you have the string, you need to configure your panel. Set the font size to the lowest possible value (0.1)
+If you want to preserve the aspect ratio of the original image (don't stretch it), set the `preserve_aspect_ratio` argument to `true`.
+3. Call the [`image_to_se_string`](https://docs.rs/image_to_space_engineers_lcd/latest/image_to_space_engineers_lcd/fn.image_to_se_string.html)
+function with the resized image. Setting the `dither` argument to `true` is highly recommended, as your image will look badly otherwise.
+4. Now that you have the string, you need to configure your panel. Set the font size to the lowest possible value (0.1)
 and the font to `Monospace`.
 
 ## Further configurations
@@ -131,7 +133,7 @@ instead of creating a new file to store the string, or optimize the code. I'm on
 [dependencies]
 # The versions below might not be up to date, but they will work for the program below.
 image = "0.24.0"
-image_to_space_engineers_lcd = "0.1.0"
+image_to_space_engineers_lcd = "0.1.3"
 ```
 ```rust
 // main.rs
@@ -156,20 +158,22 @@ fn main() {
 	println!("Enter the image path:");
 	let path = read_line();
 	let trimmed_path = path.trim(); // Just in case extra spaces get lost in there.
-	let mut source = image::open(trimmed_path).expect("Open image");
+	let mut source = image::open(trimmed_path).unwrap();
 
 	println!("Enter the panel ratio (width:height, for example, a Wide LCD Panel would be 2:1):");
-	let ratios_raw = read_line();
-	let ratios: Vec<&str> = ratios_raw.trim().split(':').collect();
-	let width_ratio: u32 = ratios[0].parse().unwrap();
-	let height_ratio: u32 = ratios[1].parse().unwrap();
+	let aspect_ratios_raw = read_line();
+	let aspect_ratios: Vec<&str> = aspect_ratios_raw.trim().split(':').collect();
+	let width_aspect_ratio: u32 = aspect_ratios[0].parse().unwrap();
+	let height_aspect_ratio: u32 = aspect_ratios[1].parse().unwrap();
 
-	let output_string = image_to_space_engineers_lcd::image_to_se_string_dithered(&mut source);
+    // Let's assume that we want to dither and don't want to stretch the image.
+    let resized = image_to_space_engineers_lcd::resized(&source, width_aspect_ratio, height_aspect_ratio, true);
+	let output_string = image_to_space_engineers_lcd::image_to_se_string(&resized, true);
 	let output_path = trimmed_path.to_owned() + "_space_engineers_text.txt";
-	let mut file = File::create(&output_path).expect("Create file");
+	let mut file = File::create(&output_path).unwrap();
 
-	file.write_all(output_string.as_ref()).expect("Write to file");
-	file.flush().expect("Flush file");
+	file.write_all(output_string.as_ref()).unwrap();
+	file.flush().unwrap();
 
 	println!("The output file can be found at {}. Open it and select everything and copy it (CTRL + A, CTRL + C). Press enter to exit...", output_path);
 	read_line();
@@ -182,21 +186,24 @@ Space Engineers panels can only display text or a limited selection of built-in 
 but if you set the font to `Monospace`, special characters will be rendered with a specific color.
 You can find the method for converting a color to this special character in the source of the [`to_se_char`](https://docs.rs/image_to_space_engineers_lcd/0.1.0/image_to_space_engineers_lcd/fn.to_se_char.html) function.
 
-That is what allows us to render images instead of text, but Space Engineers also has a limited color palette.
-This means that if simply take each pixel of an image and then convert it to that special character with no other processing,
+That is what allows us to render images instead of text, but Space Engineers also has a limited color palette and panel size.
+We need to resize the image first, specifically to a width of `178 * width_aspect_ratio` and a height of `178 * height_aspect_ratio`.
+
+When it comes to the color palette, it means that if simply take each pixel of an image and then convert it to that special character with no other processing,
 the end result will be affected by [color banding](https://en.wikipedia.org/wiki/Color_banding), and pretty badly too.
 You can see for yourself in the [example results](#example-results), just compare the ugly undithered image and the dithered image.
 
-That is why we need to first apply [dithering](https://en.wikipedia.org/wiki/Dither#Digital_photography_and_image_processing) to the image.
+That is why we need to also apply [dithering](https://en.wikipedia.org/wiki/Dither#Digital_photography_and_image_processing) to the image.
 In this case, I chose the [Floyd-Steinberg](https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering) dithering method,
 as it is one that produces excellent results while keeping things simple.
 So, the process goes like this:
 
 1. Take image
-2. Dither image
-3. Create string
-4. Get pixels in image and push a Space Engineers-compatible version to the string
-5. Return string
+2. Resize image
+3. Dither image
+4. Create string
+5. Get pixels in image and push a Space Engineers-compatible version to the string
+6. Return string
 
 Unless of course you choose the [`image_to_se_string`](https://docs.rs/image_to_space_engineers_lcd/0.1.0/image_to_space_engineers_lcd/fn.image_to_se_string.html)
 function which doesn't dither the image, resulting in the aforementioned horrible looking image in the [example results](#example-results).

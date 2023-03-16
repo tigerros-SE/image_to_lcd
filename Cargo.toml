@@ -1,13 +1,14 @@
 [package]
 name = "image_to_space_engineers_lcd"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "MIT"
 keywords = ["space_engineers"]
 repository = "https://github.com/tigerros-se/image_to_lcd"
 description = "A crate that allows you to convert an image to a string that can be displayed in a Space Engineers LCD panel"
 include = [
-    "src/**/*.rs",
+    "src/lib.rs",
+    "src/util.rs",
     "Cargo.toml",
     "README.md"
 ]
