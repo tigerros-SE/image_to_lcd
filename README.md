@@ -16,7 +16,7 @@
 
 A crate that allows you to convert an image to a string that can be displayed in a [Space Engineers](https://www.spaceengineersgame.com/) LCD panel.
 
-This project uses (tries to anyway) [Semantic Versioning](https://semver.org/).
+This project uses [Semantic Versioning](https://semver.org/) (tries to).
 
 ## Preface
 
